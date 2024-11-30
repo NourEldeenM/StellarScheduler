@@ -1,10 +1,16 @@
-class PriorityScheduler extends Scheduler {
+package packages;
+
+import packages.Scheduler;
+
+import java.util.List;
+
+public class PriorityScheduler extends Scheduler {
     public PriorityScheduler(List<Process> processes, int contextSwitchTime) {
         super(processes, contextSwitchTime);
     }
 
     @Override
-    void simulate() {
+    public void simulate() {
 
     }
 }

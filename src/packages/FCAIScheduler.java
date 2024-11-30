@@ -1,10 +1,14 @@
-class FCAIScheduler extends Scheduler {
+package packages;
+
+import java.util.List;
+
+public class FCAIScheduler extends Scheduler {
     public FCAIScheduler(List<Process> processes, int contextSwitchTime) {
         super(processes, contextSwitchTime);
     }
 
     @Override
-    void simulate() {
+    public void simulate() {
 
     }
 }

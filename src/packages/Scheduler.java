@@ -1,4 +1,9 @@
-abstract class Scheduler {
+package packages;
+
+
+import java.util.List;
+
+public abstract class Scheduler {
     List<Process> processes;
     int contextSwitchTime;
 
@@ -7,7 +12,7 @@ abstract class Scheduler {
         this.contextSwitchTime = contextSwitchTime;
     }
 
-    abstract void simulate();
+    public abstract void simulate();
 
 
     /*

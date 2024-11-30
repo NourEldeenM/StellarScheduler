@@ -1,10 +1,15 @@
-class SJFScheduler extends Scheduler {
+package packages;
+
+
+import java.util.List;
+
+public class SJFScheduler extends Scheduler {
     public SJFScheduler(List<Process> processes, int contextSwitchTime) {
         super(processes, contextSwitchTime);
     }
 
     @Override
-    void simulate() {
+    public void simulate() {
 
     }
 }

@@ -1,8 +1,35 @@
+import packages.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import packages.PriorityScheduler;
+import packages.SJFScheduler;
+import packages.SRTFScheduler;
+import packages.FCAIScheduler;
+import packages.Process;
+
 public class Main {   //or rename
     public static void main(String[] args) {
 
 
         //change depending on how we input processes
+        /*
+Program Input:
+     Number of processes
+     Round Robin Time Quantum
+     context switching
+    For Each Process you need to receive the following parameters from the user:
+             Process Name
+             Process Color(Graphical Representation)
+             Process Arrival Time
+             Process Burst Time
+             Process Priority Number
+         */
+
+
+        //add color to the constructor or ignore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter number of processes:");
@@ -16,7 +43,7 @@ public class Main {   //or rename
             int arrivalTime = scanner.nextInt();
             int burstTime = scanner.nextInt();
             int priority = scanner.nextInt();
-            processes.add(new Process(name, color, arrivalTime, burstTime, priority));
+            processes.add(new Process(name, arrivalTime, burstTime, priority));
         }
 
         System.out.println("Enter context switching time:");
@@ -43,6 +70,6 @@ public class Main {   //or rename
                 System.out.println("Invalid choice!");
                 return;
         }
-        scheduler.simulate();
+        //scheduler.simulate();
     }
 }

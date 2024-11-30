@@ -1,8 +1,13 @@
+package packages;
+
 import java.util.*;
 
-class Process {
+public class Process {
     String name;
     // initialized values maybe changed
+    //chatGPT says  int startTime = 0 and int completionTime = 0 should be initialized with -1 (don't know)
+    //For GUI, add other parameters later
+
     int arrivalTime;
     int burstTime;
     int priority;
@@ -13,9 +18,8 @@ class Process {
     int turnaroundTime = 0;
     int quantum; //  for FCAI scheduling
 
-    public Process(String name, String color, int arrivalTime, int burstTime, int priority) {
+    public Process(String name, int arrivalTime, int burstTime, int priority) {
         this.name = name;
-        this.color = color;
         this.arrivalTime = arrivalTime;
         this.burstTime = burstTime;
         this.priority = priority;

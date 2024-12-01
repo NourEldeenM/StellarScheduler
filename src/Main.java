@@ -70,6 +70,6 @@ Program Input:
                 System.out.println("Invalid choice!");
                 return;
         }
-        //scheduler.simulate();
+        scheduler.simulate();
     }
 }

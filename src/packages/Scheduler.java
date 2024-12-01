@@ -34,10 +34,10 @@ Waiting Time (WT):
     protected void calculateMetrics(Process p, int currentTime) {
         p.completionTime = currentTime;
         // TAT = Completion Time - Arrival Time
-        p.turnaroundTime = p.completionTime - p.arrivalTime;
+        p.turnaroundTime = p.completionTime - p.getArrivalTime();
         // WT = Turnaround Time - Burst Time
-        p.waitingTime = p.turnaroundTime - p.burstTime;
-        if (p.waitingTime < 0) {
+        p.waitingTime = p.turnaroundTime - p.getBurstTime();
+        if (p.getWaitingTime() < 0) {
             p.waitingTime = 0;
         }
     }
@@ -46,20 +46,23 @@ Waiting Time (WT):
     protected void printMetrics() {
         int totalWaitingTime = 0;
         int totalTurnaroundTime = 0;
-        System.out.println("Process    Arrival    Burst    Priority    Waiting    Turnaround");
+
+        System.out.println("Process    Arrival    Burst    Priority    Quantum    Waiting    Turnaround");
         for (Process p : processes) {
             System.out.println(
-                    p.name + "          " +
-                            p.arrivalTime + "         " +
-                            p.burstTime + "       " +
-                            p.priority + "          " +
-                            p.waitingTime + "          " +
-                            p.turnaroundTime
+                    p.getName() + "          " +
+                            p.getArrivalTime() + "         " +
+                            p.getBurstTime() + "       " +
+                            p.getPriority() + "          " +
+                            p.getQuantum() + "          " +
+                            p.getWaitingTime() + "          " +
+                            p.getTurnaroundTime()
             );
-            totalWaitingTime += p.waitingTime;
-            totalTurnaroundTime += p.turnaroundTime;
+            totalWaitingTime += p.getWaitingTime();
+            totalTurnaroundTime += p.getTurnaroundTime();
         }
         System.out.println("Average Waiting Time: " + (double) totalWaitingTime / processes.size());
         System.out.println("Average Turnaround Time: " + (double) totalTurnaroundTime / processes.size());
     }
+
 }

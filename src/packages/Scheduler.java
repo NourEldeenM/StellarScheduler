@@ -1,6 +1,5 @@
 package packages;
 
-
 import java.util.List;
 
 public abstract class Scheduler {
@@ -12,7 +11,7 @@ public abstract class Scheduler {
         this.contextSwitchTime = contextSwitchTime;
     }
 
-    public abstract void simulate();
+    public abstract void simulate();   // All 4 Scheduler should implement this
 
 
     /*
@@ -33,13 +32,34 @@ Waiting Time (WT):
 
 
     protected void calculateMetrics(Process p, int currentTime) {
-
-//        NOTES:  (From Lab, check others)
-//    ⇨ In case there is a Context Switching cost:
-//        Waiting time = Turnaround time - Processing time
+        p.completionTime = currentTime;
+        // TAT = Completion Time - Arrival Time
+        p.turnaroundTime = p.completionTime - p.arrivalTime;
+        // WT = Turnaround Time - Burst Time
+        p.waitingTime = p.turnaroundTime - p.burstTime;
+        if (p.waitingTime < 0) {
+            p.waitingTime = 0;
+        }
     }
 
-    protected void printMetrics() {
 
+    protected void printMetrics() {
+        int totalWaitingTime = 0;
+        int totalTurnaroundTime = 0;
+        System.out.println("Process    Arrival    Burst    Priority    Waiting    Turnaround");
+        for (Process p : processes) {
+            System.out.println(
+                    p.name + "          " +
+                            p.arrivalTime + "         " +
+                            p.burstTime + "       " +
+                            p.priority + "          " +
+                            p.waitingTime + "          " +
+                            p.turnaroundTime
+            );
+            totalWaitingTime += p.waitingTime;
+            totalTurnaroundTime += p.turnaroundTime;
+        }
+        System.out.println("Average Waiting Time: " + (double) totalWaitingTime / processes.size());
+        System.out.println("Average Turnaround Time: " + (double) totalTurnaroundTime / processes.size());
     }
 }

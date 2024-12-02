@@ -43,7 +43,7 @@ Program Input:
             int arrivalTime = scanner.nextInt();
             int burstTime = scanner.nextInt();
             int priority = scanner.nextInt();
-            int quantum = scanner.nextInt(); // Accept quantum from user
+            int quantum = scanner.nextInt();
 
             Process p = new Process(name, color, arrivalTime, burstTime, priority, quantum);
             processes.add(p);

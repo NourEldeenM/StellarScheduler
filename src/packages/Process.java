@@ -1,11 +1,15 @@
 package packages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Process {
     // initialized values maybe changed
     //For GUI, add other parameters later
 
 
     private String name;
+    private String color;
     private int arrivalTime;
     private int burstTime;
     private int priority;
@@ -17,13 +21,16 @@ public class Process {
     private int quantum; // For FCAI scheduling
     private double V1; // Last arrival time of all processes divided by 10
     private double V2; // Max burst time of all processes divided by 10
+    private List<Integer> quantumHistory = new ArrayList<>();
 
-    public Process(String name, int arrivalTime, int burstTime, int priority) {
+    public Process(String name, String color, int arrivalTime, int burstTime, int priority, int quantum) {
         this.name = name;
+        this.color = color;
         this.arrivalTime = arrivalTime;
         this.burstTime = burstTime;
         this.priority = priority;
         this.remainingBurstTime = burstTime;
+        this.quantum = quantum;
     }
 
     public String getName() {
@@ -72,9 +79,13 @@ public class Process {
     }
 
     public void setQuantum(int quantum) {
+        this.quantumHistory.add(quantum);
         this.quantum = quantum;
     }
 
+    public List<Integer> getQuantumHistory() {
+        return quantumHistory;
+    }
 
     public void setV1V2(double V1, double V2) {
         this.V1 = V1;

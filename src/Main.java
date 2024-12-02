@@ -37,13 +37,17 @@ Program Input:
 
         List<Process> processes = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            System.out.printf("Enter details for Process %d (name color arrivalTime burstTime priority):\n", i + 1);
+            System.out.println("Enter details for Process " + i + " (name color arrivalTime burstTime priority quantum):");
             String name = scanner.next();
             String color = scanner.next();
             int arrivalTime = scanner.nextInt();
             int burstTime = scanner.nextInt();
             int priority = scanner.nextInt();
-            processes.add(new Process(name, arrivalTime, burstTime, priority));
+            int quantum = scanner.nextInt(); // Accept quantum from user
+
+            Process p = new Process(name, color, arrivalTime, burstTime, priority, quantum);
+            processes.add(p);
+
         }
 
         System.out.println("Enter context switching time:");

@@ -53,6 +53,9 @@ public class Process {
     public int getRemainingBurstTime() {
         return remainingBurstTime;
     }
+    public void setRemainingBurstTime(int t) {
+         remainingBurstTime=t;
+    }
 
     public void reduceRemainingBurstTime(int time) {
         this.remainingBurstTime -= time;

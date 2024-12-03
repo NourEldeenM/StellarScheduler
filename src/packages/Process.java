@@ -22,7 +22,7 @@ public class Process {
     private double V1; // Last arrival time of all processes divided by 10
     private double V2; // Max burst time of all processes divided by 10
     private List<Integer> quantumHistory = new ArrayList<>();
-    private double FCAIFactor;
+    private int FCAIFactor;
 
     public Process(String name, String color, int arrivalTime, int burstTime, int priority, int quantum) {
         this.name = name;
@@ -53,8 +53,9 @@ public class Process {
     public int getRemainingBurstTime() {
         return remainingBurstTime;
     }
+
     public void setRemainingBurstTime(int t) {
-         remainingBurstTime=t;
+        remainingBurstTime = t;
     }
 
     public void reduceRemainingBurstTime(int time) {
@@ -65,6 +66,11 @@ public class Process {
     public int getStartTime() {
         return startTime;
     }
+
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
+    }
+
 
     public int getCompletionTime() {
         return completionTime;
@@ -98,9 +104,10 @@ public class Process {
     }
 
     public void updateFCAIFactor() {
-        this.FCAIFactor = (10 - priority) + (arrivalTime / V1) + (remainingBurstTime / V2);
+        this.FCAIFactor = (int) Math.ceil((10 - priority) + (arrivalTime / V1) + (remainingBurstTime / V2));
     }
-    public double getFCAIFactor() {
+
+    public int getFCAIFactor() {
         return FCAIFactor;
     }
 }

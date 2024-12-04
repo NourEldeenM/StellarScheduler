@@ -3,7 +3,7 @@ package packages;
 import java.util.List;
 
 public abstract class Scheduler {
-    List<Process> processes;
+    public List<Process> processes;
     int contextSwitchTime;
 
     public Scheduler(List<Process> processes, int contextSwitchTime) {
@@ -11,25 +11,25 @@ public abstract class Scheduler {
         this.contextSwitchTime = contextSwitchTime;
     }
 
-    public abstract void simulate();   // All 4 Scheduler should implement this
-
+    public abstract void simulate(); // All 4 Scheduler should implement this
 
     /*
-Key Definitions:
-Completion Time (CT):
-    The time at which a process finishes execution.
-    This is recorded when the CPU finishes the process after accounting for any waiting or execution time.
-
-Turnaround Time (TAT):
-    The total time spent by a process in the system (from arrival to completion).
-    TAT = CT - AT;    completion time, arrival time
-
-Waiting Time (WT):
-    The total time a process spends waiting in the ready queue, excluding its execution time.
-    Formula:
-        WT=TAT−BT               Turnaround Time, Burst Time.
+     * Key Definitions:
+     * Completion Time (CT):
+     * The time at which a process finishes execution.
+     * This is recorded when the CPU finishes the process after accounting for any
+     * waiting or execution time.
+     * 
+     * Turnaround Time (TAT):
+     * The total time spent by a process in the system (from arrival to completion).
+     * TAT = CT - AT; completion time, arrival time
+     * 
+     * Waiting Time (WT):
+     * The total time a process spends waiting in the ready queue, excluding its
+     * execution time.
+     * Formula:
+     * WT=TAT−BT Turnaround Time, Burst Time.
      */
-
 
     protected void calculateMetrics(Process p, int currentTime) {
         p.completionTime = currentTime;
@@ -41,7 +41,6 @@ Waiting Time (WT):
             p.waitingTime = 0;
         }
     }
-
 
     protected void printMetrics() {
         int totalWaitingTime = 0;
@@ -56,8 +55,7 @@ Waiting Time (WT):
                             p.getPriority() + "          " +
                             p.getQuantum() + "          " +
                             p.getWaitingTime() + "          " +
-                            p.getTurnaroundTime()
-            );
+                            p.getTurnaroundTime());
             totalWaitingTime += p.getWaitingTime();
             totalTurnaroundTime += p.getTurnaroundTime();
         }

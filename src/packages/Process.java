@@ -5,8 +5,7 @@ import java.util.List;
 
 public class Process {
     // initialized values maybe changed
-    //For GUI, add other parameters later
-
+    // For GUI, add other parameters later
 
     private String name;
     private String color;
@@ -42,6 +41,10 @@ public class Process {
         return arrivalTime;
     }
 
+    public void setArrivlTime(int time) {
+        arrivalTime = time;
+    }
+
     public int getBurstTime() {
         return burstTime;
     }
@@ -62,7 +65,6 @@ public class Process {
         this.remainingBurstTime -= time;
     }
 
-
     public int getStartTime() {
         return startTime;
     }
@@ -71,13 +73,20 @@ public class Process {
         this.startTime = startTime;
     }
 
-
     public int getCompletionTime() {
         return completionTime;
     }
 
+    public void setWaitingTime(int unitsOfTime) {
+        waitingTime = unitsOfTime;
+    }
+
     public int getWaitingTime() {
         return waitingTime;
+    }
+
+    public void setTurnAroundTime(int time) {
+        turnaroundTime = time;
     }
 
     public int getTurnaroundTime() {

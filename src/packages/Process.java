@@ -119,4 +119,7 @@ public class Process {
     public int getFCAIFactor() {
         return FCAIFactor;
     }
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 }

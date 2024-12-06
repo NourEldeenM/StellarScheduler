@@ -1,5 +1,6 @@
 package packages;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -12,14 +13,6 @@ public class SRTFScheduler extends Scheduler {
         super(processes, contextSwitchTime);
         readyQueue = new PriorityQueue<>(
                 Comparator.comparingInt(Process::getBurstTime));
-    }
-
-    public int getIndexOfLeastBurstTime() {
-        return IntStream.range(0, processes.size())
-                .filter(i -> processes.get(i).getBurstTime() > 0)
-                .boxed()
-                .min(Comparator.comparingInt(i -> processes.get(i).getBurstTime()))
-                .orElse(-1);
     }
 
     // function to return the process with least burst time
@@ -40,37 +33,67 @@ public class SRTFScheduler extends Scheduler {
         }
     }
 
-    // function to increase waiting time for each process, and processing time for
-    // the current process in cpu
-    public void increaseWaitingTime(Process currentProcess) {
+    // increase processing time for the current process in cpu
+    public void increaseTurnaroundTime(Process currentProcess) {
         for (Process process : readyQueue) {
             if (process.equals(currentProcess)) {
                 process.setTurnAroundTime(process.getTurnaroundTime() + 1); // increment processing time
-            } else {
-                process.setWaitingTime(process.getWaitingTime() + 1); // increment waiting time
+                return;
             }
         }
     }
 
+    // increase waiting time for processes not in cpu
+    public void increaseOtherProcessesWaitingTime(Process currentProcess) {
+        for (Process process : readyQueue) {
+            if (!process.equals(currentProcess)) {
+                process.setWaitingTime(process.getWaitingTime() + 1); // increment processing time
+            }
+        }
+    }
+
+    public void printFinishedProcess(Process finishedProcess) {
+        System.out.println("**Process: " + finishedProcess.getName() + " finished execution");
+        System.out.println("\tWaiting time: " + finishedProcess.getWaitingTime());
+        System.out.println("\tTurnaround time: " + finishedProcess.getTurnaroundTime());
+    }
+
+    private void getAverageWaitingTime() {
+        int totalWaitingTime = 0;
+        for (Process process : readyQueue) {
+            totalWaitingTime += process.getWaitingTime();
+        }
+        System.out.println("Average waiting time: " + (totalWaitingTime / readyQueue.size()));
+    }
+
+    private void getAverageTurnaroundTime() {
+        int totalTurnaroundTime = 0;
+        for (Process process : readyQueue) {
+            totalTurnaroundTime += process.getWaitingTime();
+        }
+        System.out.println("Average turnaround time: " + (totalTurnaroundTime / readyQueue.size()));
+    }
+
     @Override
     public void simulate() {
-        checkArrivedProcesses();
         int remainingProcesses = processes.size();
 
         while (remainingProcesses > 0) { // loop until finished processes is equal to the number of all
                                          // processes
+            checkArrivedProcesses();
             Process currentProcess = getLeastBurstTimProcess();
             if (currentProcess != null) { // since we are in the loop, a process might not have arrived yet
-                increaseWaitingTime(currentProcess);
+                increaseTurnaroundTime(currentProcess);
+                increaseOtherProcessesWaitingTime(currentProcess);
                 currentProcess.setRemainingBurstTime(currentProcess.getBurstTime() - 1);
                 if (currentProcess.getBurstTime() == 0) {
                     remainingProcesses -= 1;
-                    System.out.println("**Process: " + currentProcess.getName() + " finished execution");
-                    System.out.println("\tWaiting time: " + currentProcess.getWaitingTime());
-                    System.out.println("\tTurnaround time: " + currentProcess.getTurnaroundTime());
-                    readyQueue.remove();
+                    printFinishedProcess(currentProcess);
+                    currentProcess.setRemainingBurstTime(Integer.MAX_VALUE);
                 }
             }
         }
+        getAverageWaitingTime();
+        getAverageTurnaroundTime();
     }
 }

@@ -76,6 +76,10 @@ public class Process {
         return completionTime;
     }
 
+    public void setCompletionTime(int t) {
+        completionTime=t;
+    }
+
     public void setWaitingTime(int unitsOfTime) {
         waitingTime = unitsOfTime;
     }

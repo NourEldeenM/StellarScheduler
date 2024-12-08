@@ -47,15 +47,16 @@ public abstract class Scheduler {
         int totalTurnaroundTime = 0;
 
         System.out.println("CPU Schedular Metrics");
-        System.out.println("Process\t\tArrival\t\tBurst\t\tCompletion time\t\tWaiting time\tTurnaround time");
+        System.out.println("Process\t\tArrival\t\tBurst\tCompletion\tWaiting\t\tTurnaround\tQuantum");
         for (Process p : processes) {
             System.out.println(
                     p.getName() + "\t\t\t" +
                             p.getArrivalTime() + "\t\t\t" +
-                            p.getBurstTime() + "\t\t\t" +
-                            p.getCompletionTime() + "\t\t\t\t\t" +
-                            p.getWaitingTime() + "\t\t\t\t" +
-                            p.getTurnaroundTime());
+                            p.getBurstTime() + "\t\t" +
+                            p.getCompletionTime() + "\t\t\t" +
+                            p.getWaitingTime() + "\t\t\t" +
+                            p.getTurnaroundTime()+"\t\t\t"+
+                            p.getQuantum());
             totalWaitingTime += p.getWaitingTime();
             totalTurnaroundTime += p.getTurnaroundTime();
         }

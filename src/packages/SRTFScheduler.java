@@ -12,7 +12,7 @@ public class SRTFScheduler extends Scheduler {
     public SRTFScheduler(List<Process> processes, int contextSwitchTime) {
         super(processes, contextSwitchTime);
         readyQueue = new PriorityQueue<>(
-                Comparator.comparingInt(Process::getBurstTime));
+                Comparator.comparingInt(Process::getRemainingBurstTime));
     }
 
     // function to return the process with least burst time
@@ -22,14 +22,12 @@ public class SRTFScheduler extends Scheduler {
 
     // function to decrease arrival times of all processes by 1 until they reach
     // zero. Then insert the arrived process in readyQueue(priorityQueue).
-    public void checkArrivedProcesses() {
+    public void checkArrivedProcesses(List<Process> endList) {
         for (Process process : processes) {
-            if (process.getArrivalTime() > 0)
-                process.setArrivlTime(process.getArrivalTime() - 1);
-            else {
+            if (process.getArrivalTime() <= 0 && !readyQueue.contains(process) && !endList.contains(process))
                 readyQueue.add(process);
-                processes.remove(process);
-            }
+            else if (process.getArrivalTime() > 0)
+                process.setArrivlTime(process.getArrivalTime() - 1);
         }
     }
 
@@ -58,42 +56,48 @@ public class SRTFScheduler extends Scheduler {
         System.out.println("\tTurnaround time: " + finishedProcess.getTurnaroundTime());
     }
 
-    private void getAverageWaitingTime() {
+    private void getAverageWaitingTime(List<Process> p) {
         int totalWaitingTime = 0;
-        for (Process process : readyQueue) {
+        for (Process process : p) {
             totalWaitingTime += process.getWaitingTime();
         }
-        System.out.println("Average waiting time: " + (totalWaitingTime / readyQueue.size()));
+        System.out.println("Average waiting time: " + (totalWaitingTime / p.size()));
     }
 
-    private void getAverageTurnaroundTime() {
+    private void getAverageTurnaroundTime(List<Process> p) {
         int totalTurnaroundTime = 0;
-        for (Process process : readyQueue) {
-            totalTurnaroundTime += process.getWaitingTime();
+        for (Process process : p) {
+            totalTurnaroundTime += process.getTurnaroundTime();
         }
-        System.out.println("Average turnaround time: " + (totalTurnaroundTime / readyQueue.size()));
+        System.out.println(
+                "Average turnaround time: " + totalTurnaroundTime + " / " + p.size() + " = "
+                        + (totalTurnaroundTime / p.size()));
     }
 
     @Override
     public void simulate() {
         int remainingProcesses = processes.size();
+        List<Process> endList = new ArrayList<>();
 
         while (remainingProcesses > 0) { // loop until finished processes is equal to the number of all
                                          // processes
-            checkArrivedProcesses();
-            Process currentProcess = getLeastBurstTimProcess();
-            if (currentProcess != null) { // since we are in the loop, a process might not have arrived yet
-                increaseTurnaroundTime(currentProcess);
-                increaseOtherProcessesWaitingTime(currentProcess);
-                currentProcess.setRemainingBurstTime(currentProcess.getBurstTime() - 1);
-                if (currentProcess.getBurstTime() == 0) {
+            checkArrivedProcesses(endList);
+            if (readyQueue.peek() != null) { // since we are in the loop, a process might not have arrived yet
+                increaseTurnaroundTime(readyQueue.peek());
+                increaseOtherProcessesWaitingTime(readyQueue.peek());
+
+                readyQueue.peek().setRemainingBurstTime(readyQueue.peek().getRemainingBurstTime() - 1);
+                if (readyQueue.peek().getRemainingBurstTime() == 0) {
                     remainingProcesses -= 1;
-                    printFinishedProcess(currentProcess);
-                    currentProcess.setRemainingBurstTime(Integer.MAX_VALUE);
+                    readyQueue.peek().setTurnAroundTime(
+                            readyQueue.peek().getTurnaroundTime() + readyQueue.peek().getWaitingTime());
+                    printFinishedProcess(readyQueue.peek());
+                    endList.add(readyQueue.peek());
+                    readyQueue.remove(readyQueue.peek());
                 }
             }
         }
-        getAverageWaitingTime();
-        getAverageTurnaroundTime();
+        getAverageWaitingTime(endList);
+        getAverageTurnaroundTime(endList);
     }
 }

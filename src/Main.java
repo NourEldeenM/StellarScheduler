@@ -10,26 +10,24 @@ import packages.SRTFScheduler;
 import packages.FCAIScheduler;
 import packages.Process;
 
-public class Main {   //or rename
+public class Main { // or rename
     public static void main(String[] args) {
 
-
-        //change depending on how we input processes
+        // change depending on how we input processes
         /*
-Program Input:
-     Number of processes
-     Round Robin Time Quantum
-     context switching
-    For Each Process you need to receive the following parameters from the user:
-             Process Name
-             Process Color(Graphical Representation)
-             Process Arrival Time
-             Process Burst Time
-             Process Priority Number
+         * Program Input:
+         *  Number of processes
+         *  Round Robin Time Quantum
+         *  context switching
+         * For Each Process you need to receive the following parameters from the user:
+         *  Process Name
+         *  Process Color(Graphical Representation)
+         *  Process Arrival Time
+         *  Process Burst Time
+         *  Process Priority Number
          */
 
-
-        //add color to the constructor or ignore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // add color to the constructor or ignore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter number of processes:");
@@ -37,7 +35,8 @@ Program Input:
 
         List<Process> processes = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            System.out.println("Enter details for Process " + i + " (name color arrivalTime burstTime priority quantum):");
+            System.out.println(
+                    "Enter details for Process " + i + " (name color arrivalTime burstTime priority quantum):");
             String name = scanner.next();
             String color = scanner.next();
             int arrivalTime = scanner.nextInt();
@@ -47,7 +46,6 @@ Program Input:
 
             Process p = new Process(name, color, arrivalTime, burstTime, priority, quantum);
             processes.add(p);
-
         }
 
         System.out.println("Enter context switching time:");

@@ -41,6 +41,9 @@ public class Main {
         System.out.println("Enter context switching time:");
         int contextSwitchTime = scanner.nextInt();
 
+        System.out.println("Enter Round Robin Time Quantum:");
+        int roundRobinTimeQuantum = scanner.nextInt();
+
         System.out.println("Select scheduler: 1. Priority 2. SJF 3. SRTF 4. FCAI");
         int choice = scanner.nextInt();
 

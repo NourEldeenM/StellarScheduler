@@ -14,6 +14,10 @@ public class PriorityScheduler extends Scheduler {
         super(processes, contextSwitchTime);
     }
 
+    private void log(String s){
+//        System.out.printf(s);
+    }
+
     @Override
     public void simulate() {
 
@@ -25,23 +29,29 @@ public class PriorityScheduler extends Scheduler {
                 Comparator.comparingInt((Process p) -> p.getPriority())
                         .thenComparingInt(Process::getArrivalTime));
 
-        int currentTime=0;
+        int currentTime=0,completedProcesses=0;
         Process processing= null;
 
+
         //simulate clock cycles untill processess are empty
-        for (currentTime = 0; processing!=null || !processes.isEmpty() || !readyQueue.isEmpty(); currentTime++) {
+        for (currentTime = 0; processing!=null || completedProcesses<processes.size() || !readyQueue.isEmpty(); currentTime++) {
             //print current time
-            System.out.printf("%d\t",currentTime);
+            log(currentTime+"\t");
 
             //handel completed process
             if (processing != null && processing.getRemainingBurstTime() == 0) {
-                System.out.printf("%s completed\t", processing.getName());
+                //compute process parameters
+                processing.setTurnAroundTime(currentTime-processing.getArrivalTime());
+                processing.setWaitingTime(processing.getTurnaroundTime()-processing.getBurstTime());
+                //printing and logic
+                log(processing.getName()+" completed\t");
                 processing = null;
+
             }
 
             //extract all processes that are ready from processes to ready queue
-            while (!processes.isEmpty() && processes.get(0).getArrivalTime() == currentTime) {
-                readyQueue.add(processes.remove(0));
+            while (completedProcesses < processes.size() && processes.get(completedProcesses).getArrivalTime() == currentTime) {
+                readyQueue.add(processes.get(completedProcesses++));
             }
 
             //extract the chosen process from queue
@@ -61,13 +71,15 @@ public class PriorityScheduler extends Scheduler {
 
             //check if cpu has chose process to run or not
             if (processing != null) {
-                System.out.printf("%s\n", processing.getName());
+                log(processing.getName()+"\n");
                 processing.setRemainingBurstTime(processing.getRemainingBurstTime() - 1);
             } else {
-                System.out.println("CPU idle");
+                log("CPU idle\n");
             }
 
         }
 
+
+        printMetrics();
     }
 }

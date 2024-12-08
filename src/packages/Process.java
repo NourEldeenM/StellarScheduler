@@ -17,7 +17,7 @@ public class Process {
     int completionTime = -1;
     int waitingTime = 0;
     int turnaroundTime = 0;
-    private int quantum; // For FCAI scheduling
+    int quantum; // For FCAI scheduling
     private double V1; // Last arrival time of all processes divided by 10
     private double V2; // Max burst time of all processes divided by 10
     private List<Integer> quantumHistory = new ArrayList<>();
@@ -109,11 +109,10 @@ public class Process {
     public void setV1V2(double V1, double V2) {
         this.V1 = V1;
         this.V2 = V2;
-        updateFCAIFactor(); // Calculate initial FCAI factor
     }
 
-    public void updateFCAIFactor() {
-        this.FCAIFactor = (int) Math.ceil((10 - priority) + (arrivalTime / V1) + (remainingBurstTime / V2));
+    public void updateFCAIFactor(int factor) {
+        this.FCAIFactor = factor;
     }
 
     public int getFCAIFactor() {

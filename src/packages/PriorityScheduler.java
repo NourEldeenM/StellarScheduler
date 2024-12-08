@@ -18,6 +18,19 @@ public class PriorityScheduler extends Scheduler {
 //        System.out.printf(s);
     }
 
+
+    private void handelPriority(PriorityQueue<Process> currentProcesses) {
+        PriorityQueue<Process> tmp = new PriorityQueue<>(
+                Comparator.comparingInt((Process p) -> p.getPriority())
+                        .thenComparingInt(Process::getArrivalTime));
+        while(!currentProcesses.isEmpty()){
+            Process cur=currentProcesses.poll();
+            cur.setPriority(cur.getPriority()-1);
+            tmp.add(cur);
+        }
+        currentProcesses.clear();
+        currentProcesses.addAll(tmp);
+    }
     @Override
     public void simulate() {
 
@@ -74,9 +87,12 @@ public class PriorityScheduler extends Scheduler {
             if (processing != null) {
                 log(processing.getName()+"\n");
                 processing.setRemainingBurstTime(processing.getRemainingBurstTime() - 1);
+//                handelPriority(readyQueue);
             } else {
                 log("CPU idle\n");
             }
+
+//            handelPriority(readyQueue);
 
         }
 

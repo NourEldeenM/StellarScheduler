@@ -14,46 +14,89 @@ public class PriorityScheduler extends Scheduler {
         super(processes, contextSwitchTime);
     }
 
+    private void log(String s){
+//        System.out.printf(s);
+    }
+
+
+    private void handelPriority(PriorityQueue<Process> currentProcesses) {
+        PriorityQueue<Process> tmp = new PriorityQueue<>(
+                Comparator.comparingInt((Process p) -> p.getPriority())
+                        .thenComparingInt(Process::getArrivalTime));
+        while(!currentProcesses.isEmpty()){
+            Process cur=currentProcesses.poll();
+            cur.setPriority(cur.getPriority()-1);
+            tmp.add(cur);
+        }
+        currentProcesses.clear();
+        currentProcesses.addAll(tmp);
+    }
     @Override
     public void simulate() {
 
-
+        //sort processes by arraival time to enter it in ready queue
         processes.sort(Comparator.comparingInt(Process::getArrivalTime));
 
+        //ready queue declaration
         PriorityQueue<Process> readyQueue = new PriorityQueue<>(
-                Comparator.comparingInt(Process::getPriority));
+                Comparator.comparingInt((Process p) -> p.getPriority())
+                        .thenComparingInt(Process::getArrivalTime));
 
-        int currentTime=0;
+        int currentTime=0,completedProcesses=0;
         Process processing= null;
 
 
-        for (currentTime = 0; processing!=null||!processes.isEmpty() || !readyQueue.isEmpty(); currentTime++) {
-            System.out.printf("%d\t",currentTime);
+        //simulate clock cycles untill processess are empty
+        for (currentTime = 0; processing!=null || completedProcesses<processes.size() || !readyQueue.isEmpty(); currentTime++) {
+            //print current time
+            log(currentTime+"\t");
 
+            //handel completed process
             if (processing != null && processing.getRemainingBurstTime() == 0) {
-                System.out.printf("%s completed\t", processing.getName());
+                //compute process parameters
+                processing.setCompletionTime(currentTime);
+                processing.setTurnAroundTime(currentTime-processing.getArrivalTime());
+                processing.setWaitingTime(processing.getTurnaroundTime()-processing.getBurstTime());
+                //printing and logic
+                log(processing.getName()+" completed\t");
                 processing = null;
+
             }
 
-            while (!processes.isEmpty() && processes.get(0).getArrivalTime() == currentTime) {
-                readyQueue.add(processes.remove(0));
-                if (processing != null && processing.getPriority() > readyQueue.peek().getPriority()) {
-                    readyQueue.add(processing);
+            //extract all processes that are ready from processes to ready queue
+            while (completedProcesses < processes.size() && processes.get(completedProcesses).getArrivalTime() == currentTime) {
+                readyQueue.add(processes.get(completedProcesses++));
+            }
+
+            //extract the chosen process from queue
+            if (!readyQueue.isEmpty()) {
+
+                if(processing==null){
                     processing=readyQueue.poll();
+                }else{
+                    //extract which has the most priority
+                    Process expectedToRun = readyQueue.peek();
+                    if(processing!=null && expectedToRun.getPriority()<processing.getPriority()){
+                        readyQueue.add(processing);
+                        processing=readyQueue.poll();
+                    }
                 }
             }
 
-
-            if (processing == null && !readyQueue.isEmpty()) {
-                processing = readyQueue.poll();
-            }
+            //check if cpu has chose process to run or not
             if (processing != null) {
-                System.out.printf("%s\n", processing.getName());
+                log(processing.getName()+"\n");
                 processing.setRemainingBurstTime(processing.getRemainingBurstTime() - 1);
+//                handelPriority(readyQueue);
             } else {
-                System.out.println("CPU idle");
+                log("CPU idle\n");
             }
+
+//            handelPriority(readyQueue);
+
         }
 
+
+        printMetrics();
     }
 }

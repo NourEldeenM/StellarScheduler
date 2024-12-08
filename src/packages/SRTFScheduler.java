@@ -79,25 +79,41 @@ public class SRTFScheduler extends Scheduler {
         int remainingProcesses = processes.size();
         List<Process> endList = new ArrayList<>();
 
-        while (remainingProcesses > 0) { // loop until finished processes is equal to the number of all
-                                         // processes
-            checkArrivedProcesses(endList);
-            if (readyQueue.peek() != null) { // since we are in the loop, a process might not have arrived yet
-                increaseTurnaroundTime(readyQueue.peek());
-                increaseOtherProcessesWaitingTime(readyQueue.peek());
+        int currentTime = 0;  // Keep track of current time in the simulation
 
-                readyQueue.peek().setRemainingBurstTime(readyQueue.peek().getRemainingBurstTime() - 1);
-                if (readyQueue.peek().getRemainingBurstTime() == 0) {
+        while (remainingProcesses > 0) { // loop until finished processes is equal to the number of all processes
+            checkArrivedProcesses(endList);
+            if (readyQueue.peek() != null) { // a process might not have arrived yet
+                Process currentProcess = readyQueue.peek();
+
+                // Track the execution slice: record start time, end time, and execution duration
+                int startTime = currentTime;
+
+                // Decrease remaining burst time (1 unit of execution)
+                currentProcess.setRemainingBurstTime(currentProcess.getRemainingBurstTime() - 1);
+                currentTime++; // Move forward in time
+
+                // Add the execution slice to the process history
+                currentProcess.addExecutionSlice(startTime, currentTime, 1); // 1 unit of time executed
+
+                increaseTurnaroundTime(currentProcess);
+                increaseOtherProcessesWaitingTime(currentProcess);
+
+                // Check if process is finished
+                if (currentProcess.getRemainingBurstTime() == 0) {
                     remainingProcesses -= 1;
-                    readyQueue.peek().setTurnAroundTime(
-                            readyQueue.peek().getTurnaroundTime() + readyQueue.peek().getWaitingTime());
-                    printFinishedProcess(readyQueue.peek());
-                    endList.add(readyQueue.peek());
-                    readyQueue.remove(readyQueue.peek());
+                    currentProcess.setTurnAroundTime(currentProcess.getTurnaroundTime() + currentProcess.getWaitingTime());
+                    printFinishedProcess(currentProcess);
+                    endList.add(currentProcess);
+                    readyQueue.remove(currentProcess);
                 }
             }
         }
         getAverageWaitingTime(endList);
         getAverageTurnaroundTime(endList);
+
+        String schedulerName = "SRTF Scheduler";
+        new GUI(schedulerName, endList, 6, 15);
     }
+
 }

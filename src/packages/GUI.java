@@ -39,7 +39,7 @@ public class GUI extends JFrame {
                 drawExecutionTimeline(g, processes);
             }
         };
-        timelinePanel.setPreferredSize(new Dimension(1400, 250));
+        timelinePanel.setPreferredSize(new Dimension(5000, 250));
         timelinePanel.setBorder(BorderFactory.createTitledBorder("Processes Execution Timeline"));
         mainPanel.add(timelinePanel);
 

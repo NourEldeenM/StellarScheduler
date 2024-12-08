@@ -65,7 +65,6 @@ public class FCAIScheduler extends Scheduler {
             FCAIFactorLog.put(p.getName(), new ArrayList<>(List.of(p.getFCAIFactor())));
         }
 
-
         while (!processes.isEmpty() || !readyQueue.isEmpty()) {
             while (!processes.isEmpty() && processes.getFirst().getArrivalTime() <= currentTime) {
                 Process nextProcess = processes.removeFirst();
@@ -81,6 +80,7 @@ public class FCAIScheduler extends Scheduler {
                 boolean preempted = false;
                 int runningTime = 0;
                 int startTime = currentTime;
+
                 while (runningTime < current.getQuantum() && current.getRemainingBurstTime() > 0) {
 
                     while (!processes.isEmpty() && processes.getFirst().getArrivalTime() <= currentTime) {
@@ -111,6 +111,7 @@ public class FCAIScheduler extends Scheduler {
 
                 int endTime = currentTime;
                 System.out.println("Time " + startTime + "-" + endTime + " : " + current.getName() + " executes for " + (endTime - startTime) + " units of time");
+                current.addExecutionSlice(startTime, endTime, endTime - startTime);
 
                 if (current.getRemainingBurstTime() == 0 && !readyQueue.isEmpty()) {
                     Process nextProcess = readyQueue.getFirst();
@@ -118,10 +119,6 @@ public class FCAIScheduler extends Scheduler {
                         readyQueue.add(nextProcess);
                     }
                 }
-
-//                if (!readyQueue.isEmpty() || current.getRemainingBurstTime() > 0) {
-//                    currentTime += contextSwitchTime;
-//                }
 
                 quantumLog.putIfAbsent(current.getName(), new ArrayList<>());
                 FCAIFactorLog.putIfAbsent(current.getName(), new ArrayList<>());
@@ -149,14 +146,17 @@ public class FCAIScheduler extends Scheduler {
             } else {
                 currentTime++;
             }
-
         }
 
         double averageWaitingTime = (double) totalWaitingTime / Processes.size();
         double averageTurnAroundTime = (double) totalTurnaroundTime / Processes.size();
 
         printMetrics(Processes, averageWaitingTime, averageTurnAroundTime, quantumLog, FCAIFactorLog);
+
+        String schedulerName = "FCAI Scheduler";
+        new GUI(schedulerName, Processes, averageWaitingTime, averageTurnAroundTime);
     }
+
 
     public void printMetrics(
             List<Process> Processes,
@@ -195,13 +195,7 @@ public class FCAIScheduler extends Scheduler {
 
 }
 
-/*
-P1 r 0 17 4 4
-
-P2 r 3 6 9 3
-
-P3 r 4 10 3 5
-
-P4 r 29 4 8 2
-
- */
+//P1 yellow 0 17 4 4
+//P2 red 3 6 9 3
+//P3 green 4 10 3 5
+//P4 blue 29 4 8 2

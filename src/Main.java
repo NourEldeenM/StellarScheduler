@@ -10,24 +10,14 @@ import packages.SRTFScheduler;
 import packages.FCAIScheduler;
 import packages.Process;
 
-public class Main { // or rename
+
+//P1 yellow 0 17 4 4
+//P2 red 3 6 9 3
+//P3 green 4 10 3 5
+//P4 blue 29 4 8 2
+
+public class Main {
     public static void main(String[] args) {
-
-        // change depending on how we input processes
-        /*
-         * Program Input:
-         *  Number of processes
-         *  Round Robin Time Quantum
-         *  context switching
-         * For Each Process you need to receive the following parameters from the user:
-         *  Process Name
-         *  Process Color(Graphical Representation)
-         *  Process Arrival Time
-         *  Process Burst Time
-         *  Process Priority Number
-         */
-
-        // add color to the constructor or ignore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter number of processes:");

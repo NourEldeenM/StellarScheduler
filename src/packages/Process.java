@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Process {
-    // initialized values maybe changed
-    // For GUI, add other parameters later
-
     private String name;
     private String color;
     private int arrivalTime;
@@ -22,6 +19,7 @@ public class Process {
     private double V2; // Max burst time of all processes divided by 10
     private List<Integer> quantumHistory = new ArrayList<>();
     private int FCAIFactor;
+    private List<ExecutionSlice> executionHistory;
 
     public Process(String name, String color, int arrivalTime, int burstTime, int priority, int quantum) {
         this.name = name;
@@ -31,6 +29,7 @@ public class Process {
         this.priority = priority;
         this.remainingBurstTime = burstTime;
         this.quantum = quantum;
+        this.executionHistory = new ArrayList<>();
     }
 
     public String getName() {
@@ -118,7 +117,51 @@ public class Process {
     public int getFCAIFactor() {
         return FCAIFactor;
     }
+
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void addExecutionSlice(int startTime, int endTime, int executionTime) {
+        ExecutionSlice slice = new ExecutionSlice(startTime, endTime, executionTime, this.name);
+        this.executionHistory.add(slice);
+    }
+
+    public List<ExecutionSlice> getExecutionHistory() {
+        return executionHistory;
+    }
+
+    public static class ExecutionSlice {
+        private int startTime;
+        private int endTime;
+        private int executionTime;
+        private String processName;
+
+        public ExecutionSlice(int startTime, int endTime, int executionTime, String processName) {
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.executionTime = executionTime;
+            this.processName = processName;
+        }
+
+        public int getStartTime() {
+            return startTime;
+        }
+
+        public int getEndTime() {
+            return endTime;
+        }
+
+        public int getExecutionTime() {
+            return executionTime;
+        }
+
+        public String getProcessName() {
+            return processName;
+        }
     }
 }

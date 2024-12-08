@@ -41,6 +41,7 @@ public class PriorityScheduler extends Scheduler {
             //handel completed process
             if (processing != null && processing.getRemainingBurstTime() == 0) {
                 //compute process parameters
+                processing.setCompletionTime(currentTime);
                 processing.setTurnAroundTime(currentTime-processing.getArrivalTime());
                 processing.setWaitingTime(processing.getTurnaroundTime()-processing.getBurstTime());
                 //printing and logic

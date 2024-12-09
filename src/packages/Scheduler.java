@@ -11,8 +11,7 @@ public abstract class Scheduler {
         this.contextSwitchTime = contextSwitchTime;
     }
 
-    public abstract void simulate(); // All 4 Scheduler should implement this
-
+    public abstract void simulate();
     /*
      * Key Definitions:
      * Completion Time (CT):

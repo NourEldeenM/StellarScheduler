@@ -35,14 +35,31 @@ public class SJFScheduler extends Scheduler {
                 }
             }
             Process shortestProcess = Collections.min(availableProcesses, Comparator.comparingInt(Process::getBurstTime));
+            int startTime = currentTime;
             shortestProcess.setStartTime(currentTime);
             currentTime += shortestProcess.getBurstTime();
+            int endTime = currentTime;
+            shortestProcess.addExecutionSlice(startTime, endTime, endTime - startTime);
             calculateMetrics(shortestProcess, currentTime);
             scheduledProcesses.add(shortestProcess);
             processes.remove(shortestProcess);
             currentTime += contextSwitchTime;
         }
+
+        double totalWaitingTime = 0;
+        double totalTurnaroundTime = 0;
+
+        for (Process process : scheduledProcesses) {
+            totalWaitingTime += process.getWaitingTime();
+            totalTurnaroundTime += process.getTurnaroundTime();
+        }
+
+        double averageWaitingTime = totalWaitingTime / scheduledProcesses.size();
+        double averageTurnAroundTime = totalTurnaroundTime / scheduledProcesses.size();
+
         this.processes = scheduledProcesses;
         printMetrics();
+        String schedulerName = "SJF Scheduler";
+        new GUI(schedulerName, scheduledProcesses, averageWaitingTime, averageTurnAroundTime);
     }
 }

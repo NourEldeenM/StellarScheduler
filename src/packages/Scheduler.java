@@ -46,7 +46,7 @@ public abstract class Scheduler {
         int totalWaitingTime = 0;
         int totalTurnaroundTime = 0;
 
-        System.out.println("CPU Schedular Metrics");
+        System.out.println("CPU Scheduler Metrics");
         System.out.println("Process\t\tArrival\t\tBurst\tCompletion\tWaiting\t\tTurnaround\tQuantum");
         for (Process p : processes) {
             System.out.println(
@@ -63,5 +63,4 @@ public abstract class Scheduler {
         System.out.println("Average Waiting Time: " + (double) totalWaitingTime / processes.size());
         System.out.println("Average Turnaround Time: " + (double) totalTurnaroundTime / processes.size());
     }
-
 }

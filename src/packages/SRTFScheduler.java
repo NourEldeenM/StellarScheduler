@@ -15,15 +15,11 @@ public class SRTFScheduler extends Scheduler {
                 Comparator.comparingInt(Process::getRemainingBurstTime));
     }
 
-    // function to return the process with least burst time
-    public Process getLeastBurstTimProcess() {
-        return readyQueue.peek();
-    }
-
     // function to decrease arrival times of all processes by 1 until they reach
-    // zero. Then insert the arrived process in readyQueue(priorityQueue).
+    // zero, then insert the arrived process in readyQueue(priorityQueue).
     public void checkArrivedProcesses(List<Process> endList) {
         for (Process process : processes) {
+            // if the process arrived, and not in ready queue, and not served yet -> add it to ready queue
             if (process.getArrivalTime() <= 0 && !readyQueue.contains(process) && !endList.contains(process))
                 readyQueue.add(process);
             else if (process.getArrivalTime() > 0)
@@ -45,7 +41,7 @@ public class SRTFScheduler extends Scheduler {
     public void increaseOtherProcessesWaitingTime(Process currentProcess) {
         for (Process process : readyQueue) {
             if (!process.equals(currentProcess)) {
-                process.setWaitingTime(process.getWaitingTime() + 1); // increment processing time
+                process.setWaitingTime(process.getWaitingTime() + 1); // increment waiting time
             }
         }
     }
@@ -82,15 +78,14 @@ public class SRTFScheduler extends Scheduler {
         int remainingProcesses = processes.size();
         List<Process> endList = new ArrayList<>();
 
-        int currentTime = 0;  // Keep track of current time in the simulation
-
-        while (remainingProcesses > 0) { // loop until finished processes is equal to the number of all processes
+        // loop until finished processes is equal to the number of all processes
+        while (remainingProcesses > 0) {
             checkArrivedProcesses(endList);
             if (readyQueue.peek() != null) { // a process might not have arrived yet
                 Process currentProcess = readyQueue.peek();
 
                 // Track the execution slice: record start time, end time, and execution duration
-                int startTime = currentTime;
+                startTime = currentTime;
 
                 // Decrease remaining burst time (1 unit of execution)
                 currentProcess.setRemainingBurstTime(currentProcess.getRemainingBurstTime() - 1);
@@ -112,17 +107,12 @@ public class SRTFScheduler extends Scheduler {
                 }
             }
         }
-        getAverageWaitingTime(endList);
-        getAverageTurnaroundTime(endList);
 
         String schedulerName = "SRTF Scheduler";
-        new GUI(schedulerName, endList, 6, 15);
-
         int averageWaitingTime = getAverageWaitingTime(endList);
         int averageTurnAroundTime = getAverageTurnaroundTime(endList);
         System.out.println("Average waiting time: " + averageWaitingTime);
         System.out.println("Average turnaround time: " + averageTurnAroundTime);
-        String schedulerName = "SRTF Scheduler";
         new GUI(schedulerName, endList, averageWaitingTime, averageTurnAroundTime);
         
     }

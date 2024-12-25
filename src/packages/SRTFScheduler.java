@@ -8,6 +8,9 @@ import java.util.PriorityQueue;
 
 public class SRTFScheduler extends Scheduler {
     private final PriorityQueue<Process> readyQueue;
+    List<Process> endList = new ArrayList<>();
+    int remainingProcesses = processes.size();
+
 
     public SRTFScheduler(List<Process> processes, int contextSwitchTime) {
         super(processes, contextSwitchTime);
@@ -17,7 +20,7 @@ public class SRTFScheduler extends Scheduler {
 
     // function to decrease arrival times of all processes by 1 until they reach
     // zero, then insert the arrived process in readyQueue(priorityQueue).
-    public void checkArrivedProcesses(List<Process> endList) {
+    public void checkArrivedProcesses() {
         for (Process process : processes) {
             // if the process arrived, and not in ready queue, and not served yet -> add it to ready queue
             if (process.getArrivalTime() <= 0 && !readyQueue.contains(process) && !endList.contains(process))
@@ -68,43 +71,47 @@ public class SRTFScheduler extends Scheduler {
         return (totalTurnaroundTime / p.size());
     }
 
-    // current.addExecutionSlice(startTime, endTime, endTime - startTime);
+    private void checkProcessFinished(Process process) {
+        if (process.getRemainingBurstTime() <= 0) {
+            remainingProcesses -= 1;
+            process.setTurnAroundTime(process.getTurnaroundTime() + process.getWaitingTime());
+            printFinishedProcess(process);
+            endList.add(process);
+            readyQueue.remove(process);
+        }
+    }
 
     @Override
     public void simulate() {
-        int startTime;
+        int startTime = 0;
         int endTime;
         int currentTime = 0;
-        int remainingProcesses = processes.size();
-        List<Process> endList = new ArrayList<>();
+
 
         // loop until finished processes is equal to the number of all processes
+        Process previousProcess = null;
         while (remainingProcesses > 0) {
-            checkArrivedProcesses(endList);
-            if (readyQueue.peek() != null) { // a process might not have arrived yet
+            checkArrivedProcesses();
+            if (readyQueue.peek() != null)
+            { // a process might not have arrived yet
                 Process currentProcess = readyQueue.peek();
-
-                // Track the execution slice: record start time, end time, and execution duration
-                startTime = currentTime;
-
-                // Decrease remaining burst time (1 unit of execution)
+                if (previousProcess == null)
+                    previousProcess = currentProcess;
+                else if (currentProcess != previousProcess)
+                {
+                    // increase previous process context switch time (not made yet)
+                    previousProcess.addExecutionSlice(startTime, currentTime, currentTime - startTime); // put previous process in gui
+                    previousProcess = currentProcess; // previous process equals current process
+                    currentTime += contextSwitchTime;
+                    startTime = currentTime; // start time of current process = current time
+                }
                 currentProcess.setRemainingBurstTime(currentProcess.getRemainingBurstTime() - 1);
-                currentTime++; // Move forward in time
-
-                // Add the execution slice to the process history
-                currentProcess.addExecutionSlice(startTime, currentTime, 1); // 1 unit of time executed
-
+                currentTime++;
                 increaseTurnaroundTime(currentProcess);
                 increaseOtherProcessesWaitingTime(currentProcess);
-
-                // Check if process is finished
-                if (currentProcess.getRemainingBurstTime() == 0) {
-                    remainingProcesses -= 1;
-                    currentProcess.setTurnAroundTime(currentProcess.getTurnaroundTime() + currentProcess.getWaitingTime());
-                    printFinishedProcess(currentProcess);
-                    endList.add(currentProcess);
-                    readyQueue.remove(currentProcess);
-                }
+                checkProcessFinished(currentProcess);
+                if (remainingProcesses == 0)
+                    currentProcess.addExecutionSlice(startTime, currentTime, currentTime - startTime);
             }
         }
 
@@ -114,7 +121,7 @@ public class SRTFScheduler extends Scheduler {
         System.out.println("Average waiting time: " + averageWaitingTime);
         System.out.println("Average turnaround time: " + averageTurnAroundTime);
         new GUI(schedulerName, endList, averageWaitingTime, averageTurnAroundTime);
-        
+
     }
 
 }

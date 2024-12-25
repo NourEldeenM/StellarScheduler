@@ -26,7 +26,7 @@ public class SJFScheduler extends Scheduler {
             }
             if (availableProcesses.isEmpty()) {
                 currentTime = processes.get(0).getArrivalTime();
-                currentTime += contextSwitchTime;
+//                currentTime += contextSwitchTime;
                 continue;
             }
             for (Process process : processes) {
@@ -43,7 +43,7 @@ public class SJFScheduler extends Scheduler {
             calculateMetrics(shortestProcess, currentTime);
             scheduledProcesses.add(shortestProcess);
             processes.remove(shortestProcess);
-            currentTime += contextSwitchTime;
+//            currentTime += contextSwitchTime;
         }
 
         double totalWaitingTime = 0;

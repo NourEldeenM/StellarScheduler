@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.stream.IntStream;
+
 
 public class SRTFScheduler extends Scheduler {
-    private PriorityQueue<Process> readyQueue;
+    private final PriorityQueue<Process> readyQueue;
 
     public SRTFScheduler(List<Process> processes, int contextSwitchTime) {
         super(processes, contextSwitchTime);
@@ -56,36 +56,42 @@ public class SRTFScheduler extends Scheduler {
         System.out.println("\tTurnaround time: " + finishedProcess.getTurnaroundTime());
     }
 
-    private void getAverageWaitingTime(List<Process> p) {
+    private int getAverageWaitingTime(List<Process> p) {
         int totalWaitingTime = 0;
         for (Process process : p) {
             totalWaitingTime += process.getWaitingTime();
         }
-        System.out.println("Average waiting time: " + (totalWaitingTime / p.size()));
+        return (totalWaitingTime / p.size());
     }
 
-    private void getAverageTurnaroundTime(List<Process> p) {
+    private int getAverageTurnaroundTime(List<Process> p) {
         int totalTurnaroundTime = 0;
         for (Process process : p) {
             totalTurnaroundTime += process.getTurnaroundTime();
         }
-        System.out.println(
-                "Average turnaround time: " + totalTurnaroundTime + " / " + p.size() + " = "
-                        + (totalTurnaroundTime / p.size()));
+        return (totalTurnaroundTime / p.size());
     }
+
+    // current.addExecutionSlice(startTime, endTime, endTime - startTime);
 
     @Override
     public void simulate() {
+        int startTime;
+        int endTime;
+        int currentTime = 0;
         int remainingProcesses = processes.size();
         List<Process> endList = new ArrayList<>();
 
         while (remainingProcesses > 0) { // loop until finished processes is equal to the number of all
                                          // processes
+            currentTime++;
             checkArrivedProcesses(endList);
             if (readyQueue.peek() != null) { // since we are in the loop, a process might not have arrived yet
+                startTime = currentTime;
+                endTime = currentTime + 1;
+                readyQueue.peek().addExecutionSlice(startTime, endTime, endTime - startTime);
                 increaseTurnaroundTime(readyQueue.peek());
                 increaseOtherProcessesWaitingTime(readyQueue.peek());
-
                 readyQueue.peek().setRemainingBurstTime(readyQueue.peek().getRemainingBurstTime() - 1);
                 if (readyQueue.peek().getRemainingBurstTime() == 0) {
                     remainingProcesses -= 1;
@@ -97,7 +103,13 @@ public class SRTFScheduler extends Scheduler {
                 }
             }
         }
-        getAverageWaitingTime(endList);
-        getAverageTurnaroundTime(endList);
+
+        int averageWaitingTime = getAverageWaitingTime(endList);
+        int averageTurnAroundTime = getAverageTurnaroundTime(endList);
+        System.out.println("Average waiting time: " + averageWaitingTime);
+        System.out.println("Average turnaround time: " + averageTurnAroundTime);
+        String schedulerName = "SRTF Scheduler";
+        new GUI(schedulerName, endList, averageWaitingTime, averageTurnAroundTime);
+        
     }
 }

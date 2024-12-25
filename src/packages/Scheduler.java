@@ -11,8 +11,7 @@ public abstract class Scheduler {
         this.contextSwitchTime = contextSwitchTime;
     }
 
-    public abstract void simulate(); // All 4 Scheduler should implement this
-
+    public abstract void simulate();
     /*
      * Key Definitions:
      * Completion Time (CT):
@@ -46,21 +45,21 @@ public abstract class Scheduler {
         int totalWaitingTime = 0;
         int totalTurnaroundTime = 0;
 
-        System.out.println("Process    Arrival    Burst    Priority    Quantum    Waiting    Turnaround");
+        System.out.println("CPU Scheduler Metrics");
+        System.out.println("Process\t\tArrival\t\tBurst\tCompletion\tWaiting\t\tTurnaround\tQuantum");
         for (Process p : processes) {
             System.out.println(
-                    p.getName() + "          " +
-                            p.getArrivalTime() + "         " +
-                            p.getBurstTime() + "       " +
-                            p.getPriority() + "          " +
-                            p.getQuantum() + "          " +
-                            p.getWaitingTime() + "          " +
-                            p.getTurnaroundTime());
+                    p.getName() + "\t\t\t" +
+                            p.getArrivalTime() + "\t\t\t" +
+                            p.getBurstTime() + "\t\t" +
+                            p.getCompletionTime() + "\t\t\t" +
+                            p.getWaitingTime() + "\t\t\t" +
+                            p.getTurnaroundTime()+"\t\t\t"+
+                            p.getQuantum());
             totalWaitingTime += p.getWaitingTime();
             totalTurnaroundTime += p.getTurnaroundTime();
         }
         System.out.println("Average Waiting Time: " + (double) totalWaitingTime / processes.size());
         System.out.println("Average Turnaround Time: " + (double) totalTurnaroundTime / processes.size());
     }
-
 }

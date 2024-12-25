@@ -12,8 +12,11 @@ import packages.Process;
 
 
 //P1 yellow 0 17 4 4
+
 //P2 red 3 6 9 3
+
 //P3 green 4 10 3 5
+
 //P4 blue 29 4 8 2
 
 public class Main {

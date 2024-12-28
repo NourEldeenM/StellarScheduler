@@ -81,6 +81,15 @@ public class SRTFScheduler extends Scheduler {
         }
     }
 
+    private Process getAgedProcess() {
+        for (Process process : readyQueue) {
+            if (process.waitingTime % 50 == 0) { // check if a process is waiting for a long time (i.e. 50 units of time)
+                return process;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void simulate() {
         int startTime = 0;
@@ -95,6 +104,8 @@ public class SRTFScheduler extends Scheduler {
             if (readyQueue.peek() != null)
             { // a process might not have arrived yet
                 Process currentProcess = readyQueue.peek();
+                Process agedProcess = getAgedProcess(); // check if there is a process waiting for a very long time
+                currentProcess = (agedProcess == null) ? currentProcess : agedProcess;
                 if (previousProcess == null)
                     previousProcess = currentProcess;
                 else if (currentProcess != previousProcess)
